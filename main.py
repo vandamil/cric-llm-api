@@ -3,7 +3,9 @@ from openai import OpenAI
 from fastapi import FastAPI
 from vanna.vannadb import VannaDB_VectorStore
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 MY_VANNA_MODEL = os.environ["MY_VANNA_MODEL"]
 vanna_api_key = os.environ["vanna_api_key"]
 api_key = os.environ["api_key"]
