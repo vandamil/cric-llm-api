@@ -5,11 +5,11 @@ from vanna.vannadb import VannaDB_VectorStore
 import os
 from dotenv import load_dotenv
 
+
 load_dotenv()
 MY_VANNA_MODEL = os.environ["MY_VANNA_MODEL"]
 vanna_api_key = os.environ["vanna_api_key"]
 api_key = os.environ["api_key"]
-
 
 
 class MyVanna(VannaDB_VectorStore, OpenAI_Chat):
@@ -25,12 +25,26 @@ def sql(question):
     return vn.generate_sql(question,allow_llm_to_see_data=True)
 
 def df(sql_q):
-    return vn.run_sql(sql_q)    
+    return vn.run_sql(sql_q)
+
+def summary(qn,df):
+    return vn.generate_summary(question=qn,df=df)  
 
 app = FastAPI()
 
-@app.get("/question")
+@app.get("/sql")
 def sql_q(query: str):
     r = sql(query)
+    return r
+
+@app.get("/df")
+def df_q(query: str):
+    r = sql(question=query)
     d = df(r).to_string()
-    return [d,r]
+    return d
+
+@app.get("/summary")
+def summary_q(query: str):
+    r = sql(question=query)
+    d = df(r)
+    return summary(qn=query,df=d)
